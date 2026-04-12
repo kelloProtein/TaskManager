@@ -22,9 +22,12 @@ public class TaskRepository : ITaskRepository
             query = query.Where(t => t.Priority == priority.Value);
 
         if (!string.IsNullOrWhiteSpace(search))
+        {
+            var pattern = $"%{search}%";
             query = query.Where(t =>
-                t.Title.Contains(search) ||
-                (t.Description != null && t.Description.Contains(search)));
+                EF.Functions.Like(t.Title, pattern) ||
+                (t.Description != null && EF.Functions.Like(t.Description, pattern)));
+        }
 
         return await query.OrderByDescending(t => t.CreatedAt).ToListAsync();
     }

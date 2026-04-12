@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { Task, UpdateTaskInput } from '../types/task';
-import { TaskPriorityValue } from '../types/task';
+import { TaskPriorityValue, TodoStatusValue } from '../types/task';
 
 // Modal dialog for editing an existing task.
 // Uses the native <dialog> element — accessible and keyboard-friendly out of the box.
@@ -19,12 +19,16 @@ function isoToDateInput(iso: string | null): string {
 const priorityTextToInt = (p: Task['priority']): 0 | 1 | 2 =>
   p === 'Low' ? 0 : p === 'High' ? 2 : 1;
 
+const statusTextToInt = (s: Task['status']): 0 | 1 | 2 =>
+  s === 'Todo' ? 0 : s === 'InProgress' ? 1 : 2;
+
 export function EditTaskDialog({ task, onClose, onSave }: EditTaskDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<0 | 1 | 2>(TaskPriorityValue.Medium);
+  const [status, setStatus] = useState<0 | 1 | 2>(TodoStatusValue.Todo);
   const [dueDate, setDueDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -37,6 +41,7 @@ export function EditTaskDialog({ task, onClose, onSave }: EditTaskDialogProps) {
       setTitle(task.title);
       setDescription(task.description ?? '');
       setPriority(priorityTextToInt(task.priority));
+      setStatus(statusTextToInt(task.status));
       setDueDate(isoToDateInput(task.dueDate));
       if (!dialog.open) dialog.showModal();
     } else {
@@ -54,6 +59,7 @@ export function EditTaskDialog({ task, onClose, onSave }: EditTaskDialogProps) {
         title: title.trim(),
         description: description.trim() || null,
         priority,
+        status,
         dueDate: dueDate ? new Date(dueDate).toISOString() : null,
       });
       onClose();
@@ -94,6 +100,18 @@ export function EditTaskDialog({ task, onClose, onSave }: EditTaskDialogProps) {
         </label>
 
         <div className="task-form__row">
+          <label className="task-form__field">
+            <span>Status</span>
+            <select
+              value={status}
+              onChange={e => setStatus(Number(e.target.value) as 0 | 1 | 2)}
+            >
+              <option value={TodoStatusValue.Todo}>Todo</option>
+              <option value={TodoStatusValue.InProgress}>In Progress</option>
+              <option value={TodoStatusValue.Done}>Done</option>
+            </select>
+          </label>
+
           <label className="task-form__field">
             <span>Priority</span>
             <select

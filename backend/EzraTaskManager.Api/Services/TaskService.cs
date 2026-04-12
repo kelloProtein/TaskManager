@@ -46,6 +46,7 @@ public class TaskService : ITaskService
         existing.Description = request.Description?.Trim();
         existing.Priority = request.Priority;
         existing.DueDate = request.DueDate;
+        existing.Status = request.Status;
 
         var updated = await _repo.UpdateAsync(existing);
         return updated is null ? null : ToResponse(updated);

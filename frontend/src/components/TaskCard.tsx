@@ -43,9 +43,9 @@ export function TaskCard({ task, onDelete, onEdit, onStatusToggle }: TaskCardPro
             className={`badge badge--status-${task.status.toLowerCase()} badge--clickable`}
             onClick={() => onStatusToggle(task.id, nextStatus(task.status))}
             aria-label={`Change status from ${task.status}`}
-            title="Click to cycle status"
+            title="Click to advance status"
           >
-            {task.status}
+            {task.status} <span className="badge__cycle-icon">↻</span>
           </button>
           <span className={`badge badge--priority-${task.priority.toLowerCase()}`}>
             {task.priority}

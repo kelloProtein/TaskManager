@@ -28,7 +28,8 @@ public record UpdateTaskRequest(
     [Required][MaxLength(200)] string Title,
     [MaxLength(2000)] string? Description,
     TaskPriority Priority,
-    DateTime? DueDate
+    DateTime? DueDate,
+    TodoStatus Status = TodoStatus.Todo
 );
 
 // For the PATCH /status endpoint — just toggle status

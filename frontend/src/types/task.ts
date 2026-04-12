@@ -43,6 +43,7 @@ export interface UpdateTaskInput {
   description?: string | null;
   priority: 0 | 1 | 2;
   dueDate?: string | null;
+  status: 0 | 1 | 2;
 }
 
 // Filters the frontend applies (forwarded as query params to GET /api/tasks)

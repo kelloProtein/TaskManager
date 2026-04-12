@@ -60,7 +60,7 @@ describe('useTasks', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     await act(async () => {
-      await result.current.updateTask(1, { title: 'Changed', priority: 1 });
+      await result.current.updateTask(1, { title: 'Changed', priority: 1, status: 0 });
     });
 
     expect(result.current.tasks.find(t => t.id === 1)?.title).toBe('Changed');

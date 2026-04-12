@@ -60,6 +60,7 @@ describe('EditTaskDialog', () => {
       title: 'Fix SSO login',
       description: 'Users cannot log in with SSO',
       priority: 2,
+      status: 1, // InProgress
       dueDate: expect.stringContaining('2026-06-01'),
     });
     expect(onClose).toHaveBeenCalled();

@@ -7,11 +7,12 @@ import { TaskPriorityValue, TodoStatusValue } from '../types/task';
 interface FilterBarProps {
   filters: TaskFilters;
   onChange: (filters: TaskFilters) => void;
+  showStatus?: boolean;
 }
 
 const ALL = '' as const;
 
-export function FilterBar({ filters, onChange }: FilterBarProps) {
+export function FilterBar({ filters, onChange, showStatus = true }: FilterBarProps) {
   // Local state for search — debounced before propagating to the parent
   const [searchText, setSearchText] = useState(filters.search ?? '');
 
@@ -56,18 +57,20 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
         />
       </label>
 
-      <label className="filter-bar__field">
-        <span>Status</span>
-        <select
-          value={filters.status ?? ALL}
-          onChange={e => handleStatusChange(e.target.value)}
-        >
-          <option value={ALL}>All</option>
-          <option value={TodoStatusValue.Todo}>Todo</option>
-          <option value={TodoStatusValue.InProgress}>InProgress</option>
-          <option value={TodoStatusValue.Done}>Done</option>
-        </select>
-      </label>
+      {showStatus && (
+        <label className="filter-bar__field">
+          <span>Status</span>
+          <select
+            value={filters.status ?? ALL}
+            onChange={e => handleStatusChange(e.target.value)}
+          >
+            <option value={ALL}>All</option>
+            <option value={TodoStatusValue.Todo}>Todo</option>
+            <option value={TodoStatusValue.InProgress}>InProgress</option>
+            <option value={TodoStatusValue.Done}>Done</option>
+          </select>
+        </label>
+      )}
 
       <label className="filter-bar__field">
         <span>Priority</span>

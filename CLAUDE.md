@@ -62,7 +62,7 @@ npm run dev                   # starts on http://localhost:5173
 ## Feature Status
 - ✅ Phase 0 — Scaffold
 - ✅ Phase 1 — Backend CRUD
-- ⬜ Phase 2 — Frontend Core
+- ✅ Phase 2 — Frontend Core (list + create + delete + tests)
 - ⬜ Phase 3 — Full UI + Polish
 - ⬜ Phase 4 — README + GitHub
 

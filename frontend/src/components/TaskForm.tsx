@@ -13,6 +13,7 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<0 | 1 | 2>(TaskPriorityValue.Medium);
+  const [dueDate, setDueDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -25,11 +26,14 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
         title: title.trim(),
         description: description.trim() || null,
         priority,
+        // <input type="date"> returns "YYYY-MM-DD". Convert to ISO datetime (start of day UTC).
+        dueDate: dueDate ? new Date(dueDate).toISOString() : null,
       });
       // Reset form on success
       setTitle('');
       setDescription('');
       setPriority(TaskPriorityValue.Medium);
+      setDueDate('');
     } finally {
       setSubmitting(false);
     }
@@ -62,17 +66,28 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
         />
       </label>
 
-      <label className="task-form__field">
-        <span>Priority</span>
-        <select
-          value={priority}
-          onChange={e => setPriority(Number(e.target.value) as 0 | 1 | 2)}
-        >
-          <option value={TaskPriorityValue.Low}>Low</option>
-          <option value={TaskPriorityValue.Medium}>Medium</option>
-          <option value={TaskPriorityValue.High}>High</option>
-        </select>
-      </label>
+      <div className="task-form__row">
+        <label className="task-form__field">
+          <span>Priority</span>
+          <select
+            value={priority}
+            onChange={e => setPriority(Number(e.target.value) as 0 | 1 | 2)}
+          >
+            <option value={TaskPriorityValue.Low}>Low</option>
+            <option value={TaskPriorityValue.Medium}>Medium</option>
+            <option value={TaskPriorityValue.High}>High</option>
+          </select>
+        </label>
+
+        <label className="task-form__field">
+          <span>Due date</span>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={e => setDueDate(e.target.value)}
+          />
+        </label>
+      </div>
 
       <button
         type="submit"

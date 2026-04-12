@@ -36,3 +36,18 @@ export interface CreateTaskInput {
   priority: 0 | 1 | 2;
   dueDate?: string | null;
 }
+
+// Shape sent to PUT /api/tasks/{id}
+export interface UpdateTaskInput {
+  title: string;
+  description?: string | null;
+  priority: 0 | 1 | 2;
+  dueDate?: string | null;
+}
+
+// Filters the frontend applies (forwarded as query params to GET /api/tasks)
+export interface TaskFilters {
+  status?: 0 | 1 | 2;
+  priority?: 0 | 1 | 2;
+  search?: string;
+}

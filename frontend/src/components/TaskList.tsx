@@ -6,13 +6,15 @@ import { TaskCard } from './TaskCard';
 interface TaskListProps {
   tasks: Task[];
   onDelete: (id: number) => void;
+  onEdit: (task: Task) => void;
+  onStatusToggle: (id: number, newStatus: 0 | 1 | 2) => void;
 }
 
-export function TaskList({ tasks, onDelete }: TaskListProps) {
+export function TaskList({ tasks, onDelete, onEdit, onStatusToggle }: TaskListProps) {
   if (tasks.length === 0) {
     return (
       <p className="task-list__empty" data-testid="task-list-empty">
-        No tasks yet. Create one above.
+        No tasks match the current filters.
       </p>
     );
   }
@@ -20,7 +22,13 @@ export function TaskList({ tasks, onDelete }: TaskListProps) {
   return (
     <ul className="task-list" data-testid="task-list">
       {tasks.map(task => (
-        <TaskCard key={task.id} task={task} onDelete={onDelete} />
+        <TaskCard
+          key={task.id}
+          task={task}
+          onDelete={onDelete}
+          onEdit={onEdit}
+          onStatusToggle={onStatusToggle}
+        />
       ))}
     </ul>
   );

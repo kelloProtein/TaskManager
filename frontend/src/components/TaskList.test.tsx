@@ -14,9 +14,13 @@ const makeTask = (id: number, title: string): Task => ({
   updatedAt: '2026-04-11T00:00:00Z',
 });
 
+const noop = () => {};
+
 describe('TaskList', () => {
   it('renders an empty-state message when there are no tasks', () => {
-    render(<TaskList tasks={[]} onDelete={() => {}} />);
+    render(
+      <TaskList tasks={[]} onDelete={noop} onEdit={noop} onStatusToggle={noop} />
+    );
 
     expect(screen.getByTestId('task-list-empty')).toBeInTheDocument();
     expect(screen.queryByTestId('task-list')).not.toBeInTheDocument();
@@ -25,11 +29,13 @@ describe('TaskList', () => {
   it('renders one TaskCard per task in the array', () => {
     const tasks = [makeTask(1, 'First'), makeTask(2, 'Second'), makeTask(3, 'Third')];
 
-    render(<TaskList tasks={tasks} onDelete={() => {}} />);
+    render(
+      <TaskList tasks={tasks} onDelete={noop} onEdit={noop} onStatusToggle={noop} />
+    );
 
     expect(screen.getByText('First')).toBeInTheDocument();
     expect(screen.getByText('Second')).toBeInTheDocument();
     expect(screen.getByText('Third')).toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /delete/i })).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: /delete task/i })).toHaveLength(3);
   });
 });

@@ -21,6 +21,7 @@ describe('TaskForm', () => {
       title: 'Buy milk',
       description: 'Whole milk',
       priority: 1, // Medium is the default
+      dueDate: null,
     });
 
     // Form resets after successful submit
@@ -57,5 +58,22 @@ describe('TaskForm', () => {
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({ priority: 2 })
     );
+  });
+
+  it('passes the selected due date as an ISO string', async () => {
+    const onSubmit = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+
+    render(<TaskForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'With deadline');
+    // <input type="date"> takes YYYY-MM-DD; user.type works fine for it.
+    const dueInput = screen.getByLabelText(/due date/i) as HTMLInputElement;
+    await user.type(dueInput, '2026-05-01');
+    await user.click(screen.getByRole('button', { name: /create task/i }));
+
+    const payload = onSubmit.mock.calls[0][0];
+    expect(payload.dueDate).toBeTruthy();
+    expect(payload.dueDate).toMatch(/2026-05-01/);
   });
 });

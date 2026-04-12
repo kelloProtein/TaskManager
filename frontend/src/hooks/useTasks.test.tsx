@@ -51,6 +51,38 @@ describe('useTasks', () => {
     expect(result.current.tasks).toHaveLength(2);
   });
 
+  it('updateTask replaces the task in the list', async () => {
+    mockedApi.getAll.mockResolvedValue([taskA, taskB]);
+    const updatedA: Task = { ...taskA, title: 'Changed' };
+    mockedApi.update.mockResolvedValue(updatedA);
+
+    const { result } = renderHook(() => useTasks());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.updateTask(1, { title: 'Changed', priority: 1 });
+    });
+
+    expect(result.current.tasks.find(t => t.id === 1)?.title).toBe('Changed');
+    expect(result.current.tasks).toHaveLength(2);
+  });
+
+  it('updateStatus replaces the task with the updated status', async () => {
+    mockedApi.getAll.mockResolvedValue([taskA]);
+    const doneA: Task = { ...taskA, status: 'Done' };
+    mockedApi.updateStatus.mockResolvedValue(doneA);
+
+    const { result } = renderHook(() => useTasks());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await result.current.updateStatus(1, 2);
+    });
+
+    expect(result.current.tasks[0].status).toBe('Done');
+    expect(mockedApi.updateStatus).toHaveBeenCalledWith(1, 2);
+  });
+
   it('deleteTask removes the task from the list', async () => {
     mockedApi.getAll.mockResolvedValue([taskA, taskB]);
     mockedApi.remove.mockResolvedValue(undefined);
@@ -64,6 +96,25 @@ describe('useTasks', () => {
 
     expect(result.current.tasks).toEqual([taskB]);
     expect(mockedApi.remove).toHaveBeenCalledWith(1);
+  });
+
+  it('refetches with new filters when setFilters is called', async () => {
+    mockedApi.getAll.mockResolvedValue([taskA, taskB]);
+
+    const { result } = renderHook(() => useTasks());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    mockedApi.getAll.mockClear();
+    mockedApi.getAll.mockResolvedValue([taskB]);
+
+    act(() => {
+      result.current.setFilters({ priority: 2 });
+    });
+
+    await waitFor(() =>
+      expect(mockedApi.getAll).toHaveBeenCalledWith({ priority: 2 })
+    );
+    await waitFor(() => expect(result.current.tasks).toEqual([taskB]));
   });
 
   it('sets error message when getAll fails', async () => {

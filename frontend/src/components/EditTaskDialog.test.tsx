@@ -81,6 +81,30 @@ describe('EditTaskDialog', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  it('saves the newly selected status when the dropdown is changed', async () => {
+    const onSave = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+
+    render(
+      <EditTaskDialog task={sampleTask} onClose={vi.fn()} onSave={onSave} />
+    );
+
+    // sampleTask starts as InProgress (1); change to Done (2)
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: /status/i, hidden: true }),
+      '2'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /save changes/i, hidden: true })
+    );
+
+    expect(onSave).toHaveBeenCalledWith(
+      42,
+      expect.objectContaining({ status: 2 })
+    );
+  });
+
   it('does not call showModal when task is null', () => {
     render(
       <EditTaskDialog task={null} onClose={vi.fn()} onSave={vi.fn()} />

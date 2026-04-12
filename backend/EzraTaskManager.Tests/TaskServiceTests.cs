@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Moq;
 using EzraTaskManager.Api.DTOs;
 using EzraTaskManager.Api.Models;
@@ -16,7 +17,8 @@ public class TaskServiceTests
     public TaskServiceTests()
     {
         _repoMock = new Mock<ITaskRepository>();
-        _service = new TaskService(_repoMock.Object);
+        var loggerMock = new Mock<ILogger<TaskService>>();
+        _service = new TaskService(_repoMock.Object, loggerMock.Object);
     }
 
     // --- CreateAsync ---
@@ -119,6 +121,19 @@ public class TaskServiceTests
         Assert.NotNull(result);
         Assert.Equal("New title", result!.Title);
         Assert.Equal("High", result.Priority);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_AppliesStatusFromRequest()
+    {
+        var existing = new TaskItem { Id = 1, Title = "Task", Status = TodoStatus.Todo };
+        _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(existing);
+        _repoMock.Setup(r => r.UpdateAsync(It.IsAny<TaskItem>())).ReturnsAsync((TaskItem t) => t);
+
+        var result = await _service.UpdateAsync(1, new UpdateTaskRequest("Task", null, TaskPriority.Medium, null, TodoStatus.Done));
+
+        Assert.NotNull(result);
+        Assert.Equal("Done", result!.Status);
     }
 
     // --- UpdateStatusAsync ---

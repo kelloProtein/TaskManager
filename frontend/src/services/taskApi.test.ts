@@ -66,7 +66,7 @@ describe('taskApi', () => {
 
   describe('update', () => {
     it('PUTs to /api/tasks/:id with the input', async () => {
-      const input: UpdateTaskInput = { title: 'Changed', priority: 0 };
+      const input: UpdateTaskInput = { title: 'Changed', priority: 0, status: 0 };
       mockedAxios.put.mockResolvedValue({ data: sampleTask });
 
       const result = await taskApi.update(5, input);

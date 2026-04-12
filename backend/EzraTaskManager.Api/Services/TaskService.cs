@@ -8,8 +8,13 @@ namespace EzraTaskManager.Api.Services;
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _repo;
+    private readonly ILogger<TaskService> _logger;
 
-    public TaskService(ITaskRepository repo) => _repo = repo;
+    public TaskService(ITaskRepository repo, ILogger<TaskService> logger)
+    {
+        _repo = repo;
+        _logger = logger;
+    }
 
     public async Task<IEnumerable<TaskResponse>> GetAllAsync(TodoStatus? status, TaskPriority? priority, string? search)
     {
@@ -34,6 +39,7 @@ public class TaskService : ITaskService
             Status = TodoStatus.Todo
         };
         var created = await _repo.CreateAsync(task);
+        _logger.LogInformation("Task {Id} created: {Title}", created.Id, created.Title);
         return ToResponse(created);
     }
 
@@ -49,6 +55,8 @@ public class TaskService : ITaskService
         existing.Status = request.Status;
 
         var updated = await _repo.UpdateAsync(existing);
+        if (updated is not null)
+            _logger.LogInformation("Task {Id} updated", id);
         return updated is null ? null : ToResponse(updated);
     }
 
@@ -59,10 +67,18 @@ public class TaskService : ITaskService
 
         existing.Status = status;
         var updated = await _repo.UpdateAsync(existing);
+        if (updated is not null)
+            _logger.LogInformation("Task {Id} status changed to {Status}", id, status);
         return updated is null ? null : ToResponse(updated);
     }
 
-    public Task<bool> DeleteAsync(int id) => _repo.DeleteAsync(id);
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var deleted = await _repo.DeleteAsync(id);
+        if (deleted)
+            _logger.LogInformation("Task {Id} deleted", id);
+        return deleted;
+    }
 
     // Maps entity → DTO (like a Java MapStruct mapping)
     private static TaskResponse ToResponse(TaskItem t) => new(

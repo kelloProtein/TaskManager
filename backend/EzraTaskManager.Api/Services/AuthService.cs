@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EzraTaskManager.Api.Services;
 
-public class AuthService : IAuthService
+public class AuthService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<AuthService> _logger;
@@ -24,14 +24,17 @@ public class AuthService : IAuthService
 
     public LoginResponse? Authenticate(string username, string password)
     {
-        // Constant-time comparison to prevent timing attacks
+        // FixedTimeEquals requires equal-length spans to be truly constant-time —
+        // it short-circuits on length mismatch. Hashing both sides to a fixed-length
+        // SHA256 digest ensures the comparison always takes the same time regardless
+        // of input length. Production would use bcrypt/Argon2 instead.
         var usernameMatch = CryptographicOperations.FixedTimeEquals(
-            Encoding.UTF8.GetBytes(username.ToLowerInvariant()),
-            Encoding.UTF8.GetBytes(DemoUsername));
+            SHA256.HashData(Encoding.UTF8.GetBytes(username.ToLowerInvariant())),
+            SHA256.HashData(Encoding.UTF8.GetBytes(DemoUsername)));
 
         var passwordMatch = CryptographicOperations.FixedTimeEquals(
-            Encoding.UTF8.GetBytes(password),
-            Encoding.UTF8.GetBytes(DemoPassword));
+            SHA256.HashData(Encoding.UTF8.GetBytes(password)),
+            SHA256.HashData(Encoding.UTF8.GetBytes(DemoPassword)));
 
         if (!usernameMatch || !passwordMatch)
         {

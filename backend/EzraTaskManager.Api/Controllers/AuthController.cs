@@ -9,14 +9,16 @@ namespace EzraTaskManager.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly AuthService _authService;
 
-    public AuthController(IAuthService authService) => _authService = authService;
+    public AuthController(AuthService authService) => _authService = authService;
 
     [HttpPost("login")]
     [AllowAnonymous]
     public IActionResult Login([FromBody] LoginRequest request)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
         var result = _authService.Authenticate(request.Username, request.Password);
 
         return result is null

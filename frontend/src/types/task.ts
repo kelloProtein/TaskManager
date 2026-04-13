@@ -1,5 +1,4 @@
 // TypeScript interfaces that mirror the backend TaskResponse DTO.
-// Think of these as Java DTO classes — pure data shapes, no behavior.
 
 export type TodoStatus = 'Todo' | 'InProgress' | 'Done';
 export type TaskPriority = 'Low' | 'Medium' | 'High';

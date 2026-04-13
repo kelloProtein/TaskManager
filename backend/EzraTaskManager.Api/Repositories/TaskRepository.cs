@@ -4,7 +4,7 @@ using EzraTaskManager.Api.Models;
 
 namespace EzraTaskManager.Api.Repositories;
 
-// Concrete implementation — like a Spring @Repository class
+// Concrete data-access implementation backed by EF Core
 public class TaskRepository : ITaskRepository
 {
     private readonly AppDbContext _db;

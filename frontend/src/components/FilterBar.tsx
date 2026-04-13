@@ -17,7 +17,6 @@ export function FilterBar({ filters, onChange, showStatus = true }: FilterBarPro
   const [searchText, setSearchText] = useState(filters.search ?? '');
 
   // Debounce: wait 300ms after the user stops typing, then propagate.
-  // This is React's equivalent of a Java Timer/Debouncer pattern.
   useEffect(() => {
     const trimmed = searchText.trim();
     const current = filters.search ?? '';

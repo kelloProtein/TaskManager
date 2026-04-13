@@ -3,7 +3,7 @@ using EzraTaskManager.Api.Models;
 
 namespace EzraTaskManager.Api.DTOs;
 
-// What the API returns — like a Java DTO/record, never exposes the entity directly
+// What the API returns — never exposes the entity directly
 public record TaskResponse(
     int Id,
     string Title,
@@ -29,7 +29,7 @@ public record UpdateTaskRequest(
     [MaxLength(2000)] string? Description,
     TaskPriority Priority,
     DateTime? DueDate,
-    TodoStatus Status = TodoStatus.Todo
+    [Required] TodoStatus Status
 );
 
 // For the PATCH /status endpoint — just toggle status

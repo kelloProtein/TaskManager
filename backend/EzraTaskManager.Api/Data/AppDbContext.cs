@@ -3,7 +3,7 @@ using EzraTaskManager.Api.Models;
 
 namespace EzraTaskManager.Api.Data;
 
-// DbContext is like JPA's EntityManager — it's the gateway to the database
+// DbContext — the gateway to the database
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

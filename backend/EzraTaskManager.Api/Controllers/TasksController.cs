@@ -6,7 +6,6 @@ using EzraTaskManager.Api.Services;
 namespace EzraTaskManager.Api.Controllers;
 
 // Thin controller — no business logic, just HTTP in/out
-// Like a Spring @RestController
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController : ControllerBase

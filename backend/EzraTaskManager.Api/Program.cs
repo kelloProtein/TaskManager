@@ -23,7 +23,7 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
     opts.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Data Source=tasks.db"));
 
-// Dependency injection — like Spring's @Service/@Repository wiring
+// Dependency injection
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 

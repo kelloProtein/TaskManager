@@ -8,11 +8,6 @@ import type {
 import { taskApi } from '../services/taskApi';
 
 // Custom React hook that encapsulates all task list state and mutations.
-// Java parallel: think of this like a small "service bean" that components inject via
-// `const { tasks, createTask, deleteTask } = useTasks()`.
-// - useState is the state field
-// - useEffect(fn, [deps]) runs fn after the component mounts AND whenever deps change
-// - useCallback memoizes a function so its reference doesn't change every render
 
 interface UseTasksResult {
   tasks: Task[];

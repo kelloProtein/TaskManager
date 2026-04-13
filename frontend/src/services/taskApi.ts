@@ -8,7 +8,6 @@ import type {
 import { TodoStatusValue } from '../types/task';
 
 // Thin wrapper around axios — all backend communication goes through here.
-// Java parallel: this is the "HTTP client" class that all your Spring services would use.
 // Keeping it centralized means tests can mock one module and components stay agnostic.
 
 const BASE_URL = '/api/tasks';

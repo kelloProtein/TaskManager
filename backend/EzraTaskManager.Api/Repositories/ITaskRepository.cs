@@ -2,7 +2,7 @@ using EzraTaskManager.Api.Models;
 
 namespace EzraTaskManager.Api.Repositories;
 
-// Interface like a Java Repository interface — allows swapping implementations
+// Repository contract — allows swapping implementations (e.g., for testing)
 public interface ITaskRepository
 {
     Task<IEnumerable<TaskItem>> GetAllAsync(TodoStatus? status, TaskPriority? priority, string? search);

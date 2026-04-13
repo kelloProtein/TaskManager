@@ -8,7 +8,7 @@ using EzraTaskManager.Api.Services;
 namespace EzraTaskManager.Tests;
 
 // Tests for TaskService — the business logic layer.
-// ITaskRepository is mocked (like a Java Mockito mock) so no database is needed.
+// ITaskRepository is mocked so no database is needed.
 public class TaskServiceTests
 {
     private readonly Mock<ITaskRepository> _repoMock;
@@ -104,7 +104,7 @@ public class TaskServiceTests
     {
         _repoMock.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((TaskItem?)null);
 
-        var result = await _service.UpdateAsync(99, new UpdateTaskRequest("New title", null, TaskPriority.Low, null));
+        var result = await _service.UpdateAsync(99, new UpdateTaskRequest("New title", null, TaskPriority.Low, null, TodoStatus.Todo));
 
         Assert.Null(result);
     }
@@ -116,7 +116,7 @@ public class TaskServiceTests
         _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(existing);
         _repoMock.Setup(r => r.UpdateAsync(It.IsAny<TaskItem>())).ReturnsAsync((TaskItem t) => t);
 
-        var result = await _service.UpdateAsync(1, new UpdateTaskRequest("New title", "desc", TaskPriority.High, null));
+        var result = await _service.UpdateAsync(1, new UpdateTaskRequest("New title", "desc", TaskPriority.High, null, TodoStatus.InProgress));
 
         Assert.NotNull(result);
         Assert.Equal("New title", result!.Title);

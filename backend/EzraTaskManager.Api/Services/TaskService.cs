@@ -80,7 +80,7 @@ public class TaskService : ITaskService
         return deleted;
     }
 
-    // Maps entity → DTO (like a Java MapStruct mapping)
+    // Maps entity → DTO
     private static TaskResponse ToResponse(TaskItem t) => new(
         t.Id,
         t.Title,

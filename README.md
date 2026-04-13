@@ -35,7 +35,7 @@ npm run dev
 cd backend/EzraTaskManager.Tests
 dotnet test
 
-# Frontend (40 tests)
+# Frontend (38 tests)
 cd frontend
 npm test
 ```

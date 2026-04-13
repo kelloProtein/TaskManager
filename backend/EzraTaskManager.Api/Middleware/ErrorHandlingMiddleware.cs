@@ -3,8 +3,7 @@ using System.Text.Json;
 
 namespace EzraTaskManager.Api.Middleware;
 
-// Global exception handler — like a Spring @ControllerAdvice
-// Catches any unhandled exception and returns a consistent JSON error response
+// Global exception handler — catches any unhandled exception and returns a consistent JSON error response
 public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;

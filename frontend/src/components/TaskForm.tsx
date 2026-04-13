@@ -3,8 +3,6 @@ import type { CreateTaskInput } from '../types/task';
 import { TaskPriorityValue } from '../types/task';
 
 // Controlled form for creating tasks.
-// "Controlled" = React state is the source of truth for input values.
-// Java parallel: think of useState<string> as a private field + getter + setter for one input.
 interface TaskFormProps {
   onSubmit: (input: CreateTaskInput) => void | Promise<void>;
 }

@@ -2,6 +2,14 @@
 
 A full-stack to-do task management application with a .NET Core API and React frontend, built as a production-ready MVP.
 
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | ASP.NET Core 10 |
+| Database | EF Core + SQLite |
+| Frontend | React + TypeScript (Vite) |
+
 ## Quick Start
 
 ### Prerequisites
@@ -62,11 +70,15 @@ npm test
 
 ## What I Would Add Next
 
-1. **User management** — add/update/delete user, assigned-to user task field, role-based access management, remove hard-coded demo user
-2. **Refresh tokens** — short-lived access token + long-lived HttpOnly refresh cookie
-3. **Pagination** — cursor-based on the API, infinite scroll on the frontend
-4. **Database migrations** — replace `EnsureCreated()` with EF Core migrations for safe schema evolution
-5. **Rate limiting** — protect the login endpoint from brute-force; protect the task API from abuse
+1. **User management** — database-backed users with bcrypt/Argon2 password hashing, per-user task ownership via a `UserId` FK, and role-based access control. The hardcoded demo user was a scoping decision to keep the focus on the JWT mechanism itself.
+2. **Refresh tokens** — the current 60-minute access token has no renewal path, so users lose their session during long work sessions with no recovery. A short-lived access token paired with a long-lived HttpOnly refresh cookie would fix this.
+3. **Pagination** — `GET /api/tasks` currently returns all tasks unbounded. At scale this needs cursor-based pagination on the API and infinite scroll or virtual scrolling on the frontend.
+4. **Database migrations** — replace `EnsureCreated()` with EF Core migrations so schema changes can be applied incrementally without data loss.
+5. **Rate limiting** — protect the login endpoint from brute-force attempts and the task API from abuse.
+
+## Design Decisions
+
+**Kanban board layout.** The spec says "to-do task management" which could be a flat list. I chose a Kanban board (Todo / In Progress / Done columns) because status is the primary dimension users care about when scanning their tasks, and the column layout makes drag-and-drop a natural future enhancement. The "New Task" form lives in its own column so creating and viewing happen in the same viewport without modal interruption.
 
 ## Architecture
 
@@ -90,6 +102,14 @@ frontend/src/
 The backend follows the **Controller → Service → Repository** pattern. Controllers handle HTTP concerns only — no business logic. Services own all business rules and are what the tests target. Repositories abstract EF Core behind an interface so services can be tested with mocks without touching a real database.
 
 The frontend mirrors this: `taskApi.ts` and `authApi.ts` centralize all HTTP calls, `useTasks` and `useAuth` manage state, and components stay presentational.
+
+## Testing Approach
+
+**Backend (16 tests):** Tests target the service layer — the layer that owns business logic. `TaskServiceTests` mocks `ITaskRepository` to verify behavior like "status is always Todo on creation" and "title whitespace is trimmed" without touching a database. `AuthServiceTests` verifies token generation and credential rejection against a real JWT parser. Controllers are thin enough that testing them separately would just re-test ASP.NET routing.
+
+**Frontend (46 tests):** Tests are organized by layer. `taskApi.test.ts` verifies the HTTP client sends the right method/path/payload by mocking axios. `useTasks.test.tsx` and `useAuth.test.tsx` verify state management (optimistic list updates, error handling, filter-triggered refetches) by mocking the API layer. Component tests (`TaskCard`, `TaskForm`, `EditTaskDialog`, `FilterBar`, `LoginForm`) use Testing Library to verify rendering and user interactions from the user's perspective — clicking, typing, selecting.
+
+The goal was to test *behavior that could break* — business rules, state transitions, and user interactions — not implementation details or framework wiring.
 
 ## API Endpoints
 
@@ -129,6 +149,8 @@ The current design is intentionally simple for a single-user MVP, but the archit
 **localStorage for token storage.** Vulnerable to XSS. The safer alternative is an HttpOnly cookie, which trades XSS immunity for needing CSRF protection. For a demo with no user-generated content, localStorage is acceptable.
 
 **No user-scoped task data.** All authenticated users share the same task list. In production, `TaskItem` would carry a `UserId` FK and all queries would filter by the authenticated user's `sub` claim.
+
+**Delete uses `window.confirm()`.** A native browser dialog is simple and accessible, but a custom inline confirmation (e.g., undo toast) would feel more polished. Good enough for an MVP.
 
 **JWT signing key committed to source control.** Acceptable for a demo. Production would use environment variables or a secrets manager.
 

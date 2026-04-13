@@ -55,9 +55,8 @@ public class TaskService : ITaskService
         existing.Status = request.Status;
 
         var updated = await _repo.UpdateAsync(existing);
-        if (updated is not null)
-            _logger.LogInformation("Task {Id} updated", id);
-        return updated is null ? null : ToResponse(updated);
+        _logger.LogInformation("Task {Id} updated", id);
+        return ToResponse(updated);
     }
 
     public async Task<TaskResponse?> UpdateStatusAsync(int id, Models.TodoStatus status)
@@ -67,9 +66,8 @@ public class TaskService : ITaskService
 
         existing.Status = status;
         var updated = await _repo.UpdateAsync(existing);
-        if (updated is not null)
-            _logger.LogInformation("Task {Id} status changed to {Status}", id, status);
-        return updated is null ? null : ToResponse(updated);
+        _logger.LogInformation("Task {Id} status changed to {Status}", id, status);
+        return ToResponse(updated);
     }
 
     public async Task<bool> DeleteAsync(int id)

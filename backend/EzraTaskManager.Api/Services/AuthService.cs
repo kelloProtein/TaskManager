@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using EzraTaskManager.Api.DTOs;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +11,8 @@ public class AuthService
     private readonly IConfiguration _config;
     private readonly ILogger<AuthService> _logger;
 
-    // Hardcoded demo credentials — production would use a database with bcrypt/Argon2 hashing
+    // Hardcoded demo credentials — production would store users in a database
+    // with bcrypt/Argon2-hashed passwords and use constant-time comparison.
     private const string DemoUsername = "demo";
     private const string DemoPassword = "Password123!";
 
@@ -24,19 +24,8 @@ public class AuthService
 
     public LoginResponse? Authenticate(string username, string password)
     {
-        // FixedTimeEquals requires equal-length spans to be truly constant-time —
-        // it short-circuits on length mismatch. Hashing both sides to a fixed-length
-        // SHA256 digest ensures the comparison always takes the same time regardless
-        // of input length. Production would use bcrypt/Argon2 instead.
-        var usernameMatch = CryptographicOperations.FixedTimeEquals(
-            SHA256.HashData(Encoding.UTF8.GetBytes(username.ToLowerInvariant())),
-            SHA256.HashData(Encoding.UTF8.GetBytes(DemoUsername)));
-
-        var passwordMatch = CryptographicOperations.FixedTimeEquals(
-            SHA256.HashData(Encoding.UTF8.GetBytes(password)),
-            SHA256.HashData(Encoding.UTF8.GetBytes(DemoPassword)));
-
-        if (!usernameMatch || !passwordMatch)
+        if (!string.Equals(username, DemoUsername, StringComparison.OrdinalIgnoreCase)
+            || password != DemoPassword)
         {
             _logger.LogWarning("Failed login attempt for username '{Username}'", username);
             return null;

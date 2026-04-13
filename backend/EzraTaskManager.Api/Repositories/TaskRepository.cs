@@ -42,20 +42,11 @@ public class TaskRepository : ITaskRepository
         return task;
     }
 
-    public async Task<TaskItem?> UpdateAsync(TaskItem task)
+    public async Task<TaskItem> UpdateAsync(TaskItem task)
     {
-        var existing = await _db.Tasks.FindAsync(task.Id);
-        if (existing is null) return null;
-
-        existing.Title = task.Title;
-        existing.Description = task.Description;
-        existing.Status = task.Status;
-        existing.Priority = task.Priority;
-        existing.DueDate = task.DueDate;
-        existing.UpdatedAt = DateTime.UtcNow;
-
+        task.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
-        return existing;
+        return task;
     }
 
     public async Task<bool> DeleteAsync(int id)

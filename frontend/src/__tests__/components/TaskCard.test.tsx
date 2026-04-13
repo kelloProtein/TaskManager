@@ -25,20 +25,36 @@ describe('TaskCard', () => {
 
     expect(screen.getByText('Write tests')).toBeInTheDocument();
     expect(screen.getByText('Cover the card component')).toBeInTheDocument();
-    expect(screen.getByText('InProgress')).toBeInTheDocument();
+    expect(screen.getByText('In Progress')).toBeInTheDocument();
     expect(screen.getByText('High')).toBeInTheDocument();
   });
 
-  it('calls onDelete with the task id when Delete is clicked', async () => {
+  it('calls onDelete with the task id when Delete is clicked and confirmed', async () => {
     const onDelete = vi.fn();
     const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     render(
       <TaskCard task={baseTask} onDelete={onDelete} onEdit={noop} onStatusToggle={noop} />
     );
     await user.click(screen.getByRole('button', { name: /delete task/i }));
 
+    expect(window.confirm).toHaveBeenCalled();
     expect(onDelete).toHaveBeenCalledWith(7);
+  });
+
+  it('does not call onDelete when Delete is clicked but cancelled', async () => {
+    const onDelete = vi.fn();
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    render(
+      <TaskCard task={baseTask} onDelete={onDelete} onEdit={noop} onStatusToggle={noop} />
+    );
+    await user.click(screen.getByRole('button', { name: /delete task/i }));
+
+    expect(window.confirm).toHaveBeenCalled();
+    expect(onDelete).not.toHaveBeenCalled();
   });
 
   it('calls onEdit with the task when Edit is clicked', async () => {
@@ -66,7 +82,7 @@ describe('TaskCard', () => {
         onStatusToggle={onStatusToggle}
       />
     );
-    await user.click(screen.getByRole('button', { name: /change status from inprogress/i }));
+    await user.click(screen.getByRole('button', { name: /change status from in progress/i }));
 
     expect(onStatusToggle).toHaveBeenCalledWith(7, 2);
   });

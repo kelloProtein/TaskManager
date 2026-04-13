@@ -1,5 +1,5 @@
-import type { Task } from '../types/task';
-import { nextStatus } from '../services/taskApi';
+import type { Task, TodoStatus } from '../types/task';
+import { TodoStatusValue } from '../types/task';
 
 // Presentational component — no state, just props in, JSX out.
 // Renders one task with status toggle, edit, and delete actions.
@@ -8,6 +8,24 @@ interface TaskCardProps {
   onDelete: (id: number) => void;
   onEdit: (task: Task) => void;
   onStatusToggle: (id: number, newStatus: 0 | 1 | 2) => void;
+}
+
+const statusLabel: Record<TodoStatus, string> = {
+  Todo: 'Todo',
+  InProgress: 'In Progress',
+  Done: 'Done',
+};
+
+// Cycle status: Todo → InProgress → Done → Todo
+function nextStatus(current: TodoStatus): 0 | 1 | 2 {
+  switch (current) {
+    case 'Todo':
+      return TodoStatusValue.InProgress;
+    case 'InProgress':
+      return TodoStatusValue.Done;
+    case 'Done':
+      return TodoStatusValue.Todo;
+  }
 }
 
 function formatDueDate(iso: string): string {
@@ -42,10 +60,10 @@ export function TaskCard({ task, onDelete, onEdit, onStatusToggle }: TaskCardPro
             type="button"
             className={`badge badge--status-${task.status.toLowerCase()} badge--clickable`}
             onClick={() => onStatusToggle(task.id, nextStatus(task.status))}
-            aria-label={`Change status from ${task.status}`}
+            aria-label={`Change status from ${statusLabel[task.status]}`}
             title="Click to advance status"
           >
-            {task.status} <span className="badge__cycle-icon">↻</span>
+            {statusLabel[task.status]} <span className="badge__cycle-icon">↻</span>
           </button>
           <span className={`badge badge--priority-${task.priority.toLowerCase()}`}>
             {task.priority}
@@ -73,7 +91,9 @@ export function TaskCard({ task, onDelete, onEdit, onStatusToggle }: TaskCardPro
         <button
           type="button"
           className="task-card__delete"
-          onClick={() => onDelete(task.id)}
+          onClick={() => {
+            if (window.confirm(`Delete "${task.title}"?`)) onDelete(task.id);
+          }}
           aria-label={`Delete task ${task.title}`}
         >
           Delete

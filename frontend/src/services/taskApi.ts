@@ -5,7 +5,6 @@ import type {
   UpdateTaskInput,
   TaskFilters,
 } from '../types/task';
-import { TodoStatusValue } from '../types/task';
 
 // Thin wrapper around axios — all backend communication goes through here.
 // Keeping it centralized means tests can mock one module and components stay agnostic.
@@ -71,16 +70,3 @@ export const taskApi = {
     await apiClient.delete(`${BASE_URL}/${id}`);
   },
 };
-
-// Utility: cycle status Todo → InProgress → Done → Todo ...
-// Lives near the api so callers don't have to reinvent it.
-export function nextStatus(current: 'Todo' | 'InProgress' | 'Done'): 0 | 1 | 2 {
-  switch (current) {
-    case 'Todo':
-      return TodoStatusValue.InProgress;
-    case 'InProgress':
-      return TodoStatusValue.Done;
-    case 'Done':
-      return TodoStatusValue.Todo;
-  }
-}

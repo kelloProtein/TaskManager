@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import axios from 'axios';
 import type { Task, CreateTaskInput, UpdateTaskInput } from '../../types/task';
 
 // Build a fake axios instance that axios.create() will return.
@@ -26,7 +25,7 @@ vi.mock('axios', () => ({
 }));
 
 // Import after mocking so the module picks up the mocked axios.create()
-const { taskApi, nextStatus } = await import('../../services/taskApi');
+const { taskApi } = await import('../../services/taskApi');
 
 describe('taskApi', () => {
   beforeEach(() => {
@@ -121,16 +120,3 @@ describe('taskApi', () => {
   });
 });
 
-describe('nextStatus', () => {
-  it('cycles Todo → InProgress', () => {
-    expect(nextStatus('Todo')).toBe(1);
-  });
-
-  it('cycles InProgress → Done', () => {
-    expect(nextStatus('InProgress')).toBe(2);
-  });
-
-  it('cycles Done → Todo', () => {
-    expect(nextStatus('Done')).toBe(0);
-  });
-});

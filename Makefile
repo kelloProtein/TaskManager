@@ -7,7 +7,7 @@ dev:
 	$(MAKE) frontend & \
 	wait
 
-## Start the .NET backend (https://localhost:7000)
+## Start the .NET backend (http://localhost:5076)
 backend:
 	cd backend/EzraTaskManager.Api && dotnet run
 

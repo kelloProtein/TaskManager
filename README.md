@@ -70,11 +70,14 @@ npm test
 
 ## What I Would Add Next
 
-1. **User management** — database-backed users with bcrypt/Argon2 password hashing, per-user task ownership via a `UserId` FK, and role-based access control. The hardcoded demo user was a scoping decision to keep the focus on the JWT mechanism itself.
-2. **Refresh tokens** — the current 60-minute access token has no renewal path, so users lose their session during long work sessions with no recovery. A short-lived access token paired with a long-lived HttpOnly refresh cookie would fix this.
-3. **Pagination** — `GET /api/tasks` currently returns all tasks unbounded. At scale this needs cursor-based pagination on the API and infinite scroll or virtual scrolling on the frontend.
-4. **Database migrations** — replace `EnsureCreated()` with EF Core migrations so schema changes can be applied incrementally without data loss.
-5. **Rate limiting** — protect the login endpoint from brute-force attempts and the task API from abuse.
+1. **User management** — Add/Update/Delete User, database-backed users with bcrypt/Argon2 password hashing, per-user task ownership via a `UserId` FK, and role-based access control. The hardcoded demo user was a scoping decision to keep the focus on the JWT mechanism itself.
+2. **Project field** — Add a `Project` field to each task so users can organize and scope tasks by project.
+3. **Filter by Project** — Add filtering controls to the UI so users can view tasks scoped to a specific project.
+4. **User-configurable columns** — Allow users to customize the board columns to align with their development lifecycles (e.g., Backlog / Ready / Dev / Testing / Review / Done) instead of the fixed Todo / In Progress / Done layout.
+5. **Refresh tokens** — the current 60-minute access token has no renewal path, so users lose their session during long work sessions with no recovery. A short-lived access token paired with a long-lived HttpOnly refresh cookie would fix this.
+6. **Pagination** — `GET /api/tasks` currently returns all tasks unbounded. At scale this needs cursor-based pagination on the API and infinite scroll or virtual scrolling on the frontend.
+7. **Database migrations** — replace `EnsureCreated()` with EF Core migrations so schema changes can be applied incrementally without data loss.
+8. **Rate limiting** — protect the login endpoint from brute-force attempts and the task API from abuse.
 
 ## Design Decisions
 

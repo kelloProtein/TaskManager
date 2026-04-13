@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { taskApi, nextStatus } from './taskApi';
-import type { Task, CreateTaskInput, UpdateTaskInput } from '../types/task';
+import { taskApi, nextStatus } from '../../services/taskApi';
+import type { Task, CreateTaskInput, UpdateTaskInput } from '../../types/task';
 
 // Mock the axios module — no real HTTP calls.
 vi.mock('axios');

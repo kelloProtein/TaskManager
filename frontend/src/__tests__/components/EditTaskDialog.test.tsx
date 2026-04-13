@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { EditTaskDialog } from './EditTaskDialog';
-import type { Task } from '../types/task';
+import { EditTaskDialog } from '../../components/EditTaskDialog';
+import type { Task } from '../../types/task';
 
 // HTMLDialogElement.showModal() / .close() are not implemented in jsdom,
 // so we stub them to prevent errors and let the component render normally.

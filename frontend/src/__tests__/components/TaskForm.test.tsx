@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TaskForm } from './TaskForm';
+import { TaskForm } from '../../components/TaskForm';
 
 describe('TaskForm', () => {
   it('calls onSubmit with the typed values and clears the form', async () => {

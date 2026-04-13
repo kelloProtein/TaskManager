@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { useTasks } from './useTasks';
-import { taskApi } from '../services/taskApi';
-import type { Task } from '../types/task';
+import { useTasks } from '../../hooks/useTasks';
+import { taskApi } from '../../services/taskApi';
+import type { Task } from '../../types/task';
 
 // Mock the service layer so the hook has no real HTTP dependency.
-vi.mock('../services/taskApi');
+vi.mock('../../services/taskApi');
 const mockedApi = vi.mocked(taskApi);
 
 const taskA: Task = {

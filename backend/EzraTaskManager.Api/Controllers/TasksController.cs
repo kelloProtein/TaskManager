@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EzraTaskManager.Api.DTOs;
 using EzraTaskManager.Api.Models;
@@ -8,6 +9,7 @@ namespace EzraTaskManager.Api.Controllers;
 // Thin controller — no business logic, just HTTP in/out
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TasksController : ControllerBase
 {
     private readonly ITaskService _service;

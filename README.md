@@ -8,25 +8,32 @@ A full-stack to-do task management application with a .NET Core API and React fr
 - [.NET SDK 10+](https://dotnet.microsoft.com/download)
 - [Node.js 18+](https://nodejs.org/)
 
-### Backend
+### Start everything
 
 ```bash
-cd backend/EzraTaskManager.Api
-dotnet run --launch-profile http
-# API available at http://localhost:5076
-# Swagger UI at http://localhost:5076/swagger
+make install   # first time only — installs frontend dependencies
+make dev       # starts backend + frontend concurrently
 ```
 
-The SQLite database (`tasks.db`) is created automatically on first run.
+- API: `http://localhost:5076` — Swagger UI at `/swagger`
+- App: `http://localhost:5173`
 
-### Frontend
+The SQLite database (`tasks.db`) is created automatically on first run. Press `Ctrl+C` to stop both servers.
+
+<details>
+<summary>Manual start (without make)</summary>
 
 ```bash
+# Terminal 1 — backend
+cd backend/EzraTaskManager.Api
+dotnet run --launch-profile http
+
+# Terminal 2 — frontend
 cd frontend
 npm install
 npm run dev
-# App available at http://localhost:5173
 ```
+</details>
 
 ### Running Tests
 

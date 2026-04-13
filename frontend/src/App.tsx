@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useAuth } from './hooks/useAuth';
 import { useTasks } from './hooks/useTasks';
+import { LoginForm } from './components/LoginForm';
 import { TaskForm } from './components/TaskForm';
 import { TaskCard } from './components/TaskCard';
 import { FilterBar } from './components/FilterBar';
@@ -55,7 +57,7 @@ function KanbanColumn({
   );
 }
 
-function App() {
+function TaskBoard({ onLogout }: { onLogout: () => void }) {
   const {
     tasks,
     loading,
@@ -80,6 +82,7 @@ function App() {
         <div className="app__header-inner">
           <h1 className="app__title">Ezra Task Manager</h1>
           <FilterBar filters={filters} onChange={setFilters} showStatus={false} />
+          <button className="app__logout-btn" onClick={onLogout}>Sign Out</button>
         </div>
       </header>
 
@@ -138,6 +141,16 @@ function App() {
       />
     </div>
   );
+}
+
+function App() {
+  const { isAuthenticated, login, logout, loading, error } = useAuth();
+
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={login} loading={loading} error={error} />;
+  }
+
+  return <TaskBoard onLogout={logout} />;
 }
 
 export default App;

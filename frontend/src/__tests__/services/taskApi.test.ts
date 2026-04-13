@@ -1,11 +1,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
-import { taskApi, nextStatus } from '../../services/taskApi';
 import type { Task, CreateTaskInput, UpdateTaskInput } from '../../types/task';
 
+// Build a fake axios instance that axios.create() will return.
+// It needs the HTTP methods (get, post, etc.) and an interceptors stub.
+const mockInstance = {
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  patch: vi.fn(),
+  delete: vi.fn(),
+  interceptors: {
+    request: { use: vi.fn() },
+    response: { use: vi.fn() },
+  },
+};
+
 // Mock the axios module — no real HTTP calls.
-vi.mock('axios');
-const mockedAxios = vi.mocked(axios);
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn(() => mockInstance),
+    isAxiosError: vi.fn(),
+  },
+  __esModule: true,
+}));
+
+// Import after mocking so the module picks up the mocked axios.create()
+const { taskApi, nextStatus } = await import('../../services/taskApi');
 
 describe('taskApi', () => {
   beforeEach(() => {
@@ -25,41 +46,41 @@ describe('taskApi', () => {
 
   describe('getAll', () => {
     it('calls GET /api/tasks with no params when no filters are provided', async () => {
-      mockedAxios.get.mockResolvedValue({ data: [sampleTask] });
+      mockInstance.get.mockResolvedValue({ data: [sampleTask] });
 
       const result = await taskApi.getAll();
 
-      expect(mockedAxios.get).toHaveBeenCalledWith('/api/tasks', { params: {} });
+      expect(mockInstance.get).toHaveBeenCalledWith('/api/tasks', { params: {} });
       expect(result).toEqual([sampleTask]);
     });
 
     it('forwards status, priority, and search as query params', async () => {
-      mockedAxios.get.mockResolvedValue({ data: [] });
+      mockInstance.get.mockResolvedValue({ data: [] });
 
       await taskApi.getAll({ status: 1, priority: 2, search: 'bug' });
 
-      expect(mockedAxios.get).toHaveBeenCalledWith('/api/tasks', {
+      expect(mockInstance.get).toHaveBeenCalledWith('/api/tasks', {
         params: { status: 1, priority: 2, search: 'bug' },
       });
     });
 
     it('omits empty search strings', async () => {
-      mockedAxios.get.mockResolvedValue({ data: [] });
+      mockInstance.get.mockResolvedValue({ data: [] });
 
       await taskApi.getAll({ search: '' });
 
-      expect(mockedAxios.get).toHaveBeenCalledWith('/api/tasks', { params: {} });
+      expect(mockInstance.get).toHaveBeenCalledWith('/api/tasks', { params: {} });
     });
   });
 
   describe('create', () => {
     it('POSTs the input and returns the created task', async () => {
       const input: CreateTaskInput = { title: 'New', priority: 2 };
-      mockedAxios.post.mockResolvedValue({ data: sampleTask });
+      mockInstance.post.mockResolvedValue({ data: sampleTask });
 
       const result = await taskApi.create(input);
 
-      expect(mockedAxios.post).toHaveBeenCalledWith('/api/tasks', input);
+      expect(mockInstance.post).toHaveBeenCalledWith('/api/tasks', input);
       expect(result).toEqual(sampleTask);
     });
   });
@@ -67,22 +88,22 @@ describe('taskApi', () => {
   describe('update', () => {
     it('PUTs to /api/tasks/:id with the input', async () => {
       const input: UpdateTaskInput = { title: 'Changed', priority: 0, status: 0 };
-      mockedAxios.put.mockResolvedValue({ data: sampleTask });
+      mockInstance.put.mockResolvedValue({ data: sampleTask });
 
       const result = await taskApi.update(5, input);
 
-      expect(mockedAxios.put).toHaveBeenCalledWith('/api/tasks/5', input);
+      expect(mockInstance.put).toHaveBeenCalledWith('/api/tasks/5', input);
       expect(result).toEqual(sampleTask);
     });
   });
 
   describe('updateStatus', () => {
     it('PATCHes /api/tasks/:id/status with the status int', async () => {
-      mockedAxios.patch.mockResolvedValue({ data: sampleTask });
+      mockInstance.patch.mockResolvedValue({ data: sampleTask });
 
       await taskApi.updateStatus(3, 2);
 
-      expect(mockedAxios.patch).toHaveBeenCalledWith(
+      expect(mockInstance.patch).toHaveBeenCalledWith(
         '/api/tasks/3/status',
         { status: 2 }
       );
@@ -91,11 +112,11 @@ describe('taskApi', () => {
 
   describe('remove', () => {
     it('DELETEs /api/tasks/:id', async () => {
-      mockedAxios.delete.mockResolvedValue({});
+      mockInstance.delete.mockResolvedValue({});
 
       await taskApi.remove(42);
 
-      expect(mockedAxios.delete).toHaveBeenCalledWith('/api/tasks/42');
+      expect(mockInstance.delete).toHaveBeenCalledWith('/api/tasks/42');
     });
   });
 });

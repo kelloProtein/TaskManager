@@ -343,7 +343,8 @@ body {
   gap: 0.75rem;
   align-items: flex-end;
   flex-wrap: wrap;
-  margin-left: auto;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .filter-bar__field {
@@ -418,3 +419,114 @@ body {
 }
 
 .edit-dialog__cancel:hover { background: #f8fafc; }
+
+/* ── Login ───────────────────────────────────────────────── */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  padding: 1rem;
+}
+
+.login-form {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  padding: 2rem 2.25rem;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.login-form__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+}
+
+.login-form__hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.login-form__error {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.login-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.login-form__field input {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background: #f8fafc;
+}
+
+.login-form__field input:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.login-form__submit {
+  width: 100%;
+  padding: 0.6rem;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.login-form__submit:hover { background: #4f46e5; }
+
+.login-form__submit:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* ── Logout button ───────────────────────────────────────── */
+.app__logout-btn {
+  padding: 0.35rem 0.75rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  color: #64748b;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.app__logout-btn:hover {
+  background: #f8fafc;
+  color: #475569;
+}

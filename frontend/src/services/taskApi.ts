@@ -12,6 +12,29 @@ import { TodoStatusValue } from '../types/task';
 
 const BASE_URL = '/api/tasks';
 
+// Separate axios instance so the Bearer token is only sent on task API calls,
+// not on the login endpoint (which uses plain axios in authApi.ts).
+const apiClient = axios.create();
+
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      localStorage.removeItem('auth_token');
+      window.location.reload();
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const taskApi = {
   getAll: async (filters?: TaskFilters): Promise<Task[]> => {
     const params: Record<string, string | number> = {};
@@ -19,17 +42,17 @@ export const taskApi = {
     if (filters?.priority !== undefined) params.priority = filters.priority;
     if (filters?.search) params.search = filters.search;
 
-    const response = await axios.get<Task[]>(BASE_URL, { params });
+    const response = await apiClient.get<Task[]>(BASE_URL, { params });
     return response.data;
   },
 
   create: async (input: CreateTaskInput): Promise<Task> => {
-    const response = await axios.post<Task>(BASE_URL, input);
+    const response = await apiClient.post<Task>(BASE_URL, input);
     return response.data;
   },
 
   update: async (id: number, input: UpdateTaskInput): Promise<Task> => {
-    const response = await axios.put<Task>(`${BASE_URL}/${id}`, input);
+    const response = await apiClient.put<Task>(`${BASE_URL}/${id}`, input);
     return response.data;
   },
 
@@ -37,7 +60,7 @@ export const taskApi = {
     id: number,
     status: 0 | 1 | 2
   ): Promise<Task> => {
-    const response = await axios.patch<Task>(
+    const response = await apiClient.patch<Task>(
       `${BASE_URL}/${id}/status`,
       { status }
     );
@@ -45,7 +68,7 @@ export const taskApi = {
   },
 
   remove: async (id: number): Promise<void> => {
-    await axios.delete(`${BASE_URL}/${id}`);
+    await apiClient.delete(`${BASE_URL}/${id}`);
   },
 };
 

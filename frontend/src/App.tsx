@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { useTasks } from './hooks/useTasks';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { LoginForm } from './components/LoginForm';
 import { TaskForm } from './components/TaskForm';
 import { TaskCard } from './components/TaskCard';
@@ -150,7 +151,11 @@ function App() {
     return <LoginForm onLogin={login} loading={loading} error={error} />;
   }
 
-  return <TaskBoard onLogout={logout} />;
+  return (
+    <ErrorBoundary>
+      <TaskBoard onLogout={logout} />
+    </ErrorBoundary>
+  );
 }
 
 export default App;

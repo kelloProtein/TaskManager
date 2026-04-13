@@ -530,3 +530,13 @@ body {
   background: #f8fafc;
   color: #475569;
 }
+
+/* ── Error boundary ──────────────────────────────────────── */
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b91c1c;
+  font-size: 0.95rem;
+}

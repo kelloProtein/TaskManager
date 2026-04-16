@@ -1,4 +1,4 @@
-# Ezra Task Manager
+#Task Manager
 
 A full-stack to-do task management application with a .NET Core API and React frontend, built as a production-ready MVP.
 
